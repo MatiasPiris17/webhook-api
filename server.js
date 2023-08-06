@@ -8,8 +8,14 @@ app = express().use(body_parser.json());
 app.listen(3001, () => console.log("webhook is listening"));
 
 app.post("/webhook", async (req, res) => {
-
   try {
+    let from = req.body.entry[0].changes[0].value.messages[0].from;
+    let msg_body = req.body.entry[0].changes[0].value.messages[0].text.body;
+
+    const url = `https://graph.facebook.com/v17.0/108588405630526/messages?access_token=${token}`
+    const config = { "Content-Type": "application/json" }
+    const data = { messaging_product: "whatsapp", to: from, text: { body: "Ack: " + msg_body } }
+
     console.log(JSON.stringify(req.body, null, 2));
 
     if (req.body.object) { 
@@ -20,20 +26,8 @@ app.post("/webhook", async (req, res) => {
         req.body.entry[0].changes[0].value.messages &&
         req.body.entry[0].changes[0].value.messages[0]
       ) {
-        let from = req.body.entry[0].changes[0].value.messages[0].from;
-        let msg_body = req.body.entry[0].changes[0].value.messages[0].text.body;
-        await axios.post({
-          url:
-            "https://graph.facebook.com/v17.0/108588405630526/messages" +
-            "?access_token=" +
-            token,
-          data: {
-            messaging_product: "whatsapp",
-            to: from,
-            text: { body: "Ack: " + msg_body },
-          },
-          headers: { "Content-Type": "application/json" },
-        });
+
+        await axios.post(url, data, config);
       }
 
       return res.status(200)
