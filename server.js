@@ -22,7 +22,8 @@ app.post("/webhook", async (req, res) => {
     };
 
     // console.log(JSON.stringify(req.body, null, 2));
-    console.log(req.body.map(a => a.changes));
+    const body = req.body.map(a => a.changes)
+    console.log(body);
 
     await axios.post(url, data, config);
 
