@@ -6,66 +6,66 @@ const request = require("request"),
   axios = require("axios");
 app = express().use(body_parser.json());
 
-app.listen(process.env.PORT, () => console.log("webhook is listening"));
+app.listen(3001, () => console.log("webhook is listening"));
 
 app.post("/webhook", (req, res) => {
-  let body = req.body;
+  try {
+    console.log(JSON.stringify(req.body, null, 2));
 
-  console.log(JSON.stringify(req.body, null, 2));
-
-  if (req.body.object) {
-    if (
-      req.body.entry &&
-      req.body.entry[0].changes &&
-      req.body.entry[0].changes[0] &&
-      req.body.entry[0].changes[0].value.messages &&
-      req.body.entry[0].changes[0].value.messages[0]
-    ) {
-      let phone_number_id =
-        req.body.entry[0].changes[0].value.metadata.phone_number_id;
-      let from = req.body.entry[0].changes[0].value.messages[0].from; 
-      let msg_body = req.body.entry[0].changes[0].value.messages[0].text.body; 
-      axios({
-        method: "POST", // Required, HTTP method, a string, e.g. POST, GET
-        url:"https://graph.facebook.com/v17.0/108588405630526/messages" + "?access_token=" + token,
-        data: {
-          messaging_product: "whatsapp",
-          to: from,
-          text: { body: "Ack: " + msg_body },
-        },
-        headers: { "Content-Type": "application/json" },
-      });
+    if (req.body.object) {
+      if (
+        req.body.entry &&
+        req.body.entry[0].changes &&
+        req.body.entry[0].changes[0] &&
+        req.body.entry[0].changes[0].value.messages &&
+        req.body.entry[0].changes[0].value.messages[0]
+      ) {
+        let from = req.body.entry[0].changes[0].value.messages[0].from;
+        let msg_body = req.body.entry[0].changes[0].value.messages[0].text.body;
+        axios({
+          method: "POST",
+          url:
+            "https://graph.facebook.com/v17.0/108588405630526/messages" +
+            "?access_token=" +
+            token,
+          data: {
+            messaging_product: "whatsapp",
+            to: from,
+            text: { body: "Ack: " + msg_body },
+          },
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+      res.sendStatus(200);
+    } else {
+      return res.status(404).json(error)
     }
-    res.sendStatus(200);
-  } else {
-    res.sendStatus(404);
+  } catch (error) {
+    console.log(error);
+    res.status(404).json(error);
   }
 });
 
 // Accepts GET requests at the /webhook endpoint. You need this URL to setup webhook initially.
 // info on verification request payload: https://developers.facebook.com/docs/graph-api/webhooks/getting-started#verification-requests
 app.get("/webhook", (req, res) => {
-  /**
-   * UPDATE YOUR VERIFY TOKEN
-   *This will be the Verify Token value when you set up webhook
-   **/
-  const verify_token = process.env.VERIFY_TOKEN;
-
-  // Parse params from the webhook verification request
-  let mode = req.query["hub.mode"];
-  let token = req.query["hub.verify_token"];
-  let challenge = req.query["hub.challenge"];
-
-  // Check if a token and mode were sent
-  if (mode && token) {
-    // Check the mode and token sent are correct
-    if (mode === "subscribe" && token === verify_token) {
-      // Respond with 200 OK and challenge token from the request
-      console.log("WEBHOOK_VERIFIED");
-      res.status(200).send(challenge);
-    } else {
-      // Responds with '403 Forbidden' if verify tokens do not match
-      res.sendStatus(403);
+  try {
+    const verify_token = process.env.VERIFY_TOKEN;
+  
+    let mode = req.query["hub.mode"];
+    let token = req.query["hub.verify_token"];
+    let challenge = req.query["hub.challenge"];
+  
+    if (mode && token) {
+      if (mode === "subscribe" && token === verify_token) {
+        console.log("WEBHOOK_VERIFIED");
+        res.status(200).send(challenge);
+      } else {
+        return res.status(404).json(error)
+      }
     }
+  } catch (error) {
+    console.log(error);
+    res.status(404).json(error);
   }
 });
