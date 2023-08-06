@@ -22,14 +22,14 @@ app.post("/webhook", async (req, res) => {
     };
 
     // console.log(JSON.stringify(req.body, null, 2));
-    console.log(req.body);
+    console.log(req.body.map(a => a.changes));
 
     await axios.post(url, data, config);
 
     return res.status(200);
   } catch (error) {
-    console.log(error.response);
-    res.status(404).json(error);
+    // console.log(error.response);
+    res.status(404).json("Error" + {error: error.response});
   }
 });
 
