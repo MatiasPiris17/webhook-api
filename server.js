@@ -39,7 +39,7 @@ app.post("/webhook", async (req, res) => {
     // } else {
     //   return res.status(404).json(error)
   } catch (error) {
-    console.log(error);
+    console.log(error.response);
     res.status(404).json(error);
   }
 });
