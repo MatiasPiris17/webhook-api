@@ -1,8 +1,8 @@
 const token = process.env.WHATSAPP_TOKEN;
-const port = process.env.PORT;
-(express = require("express")),
-  (body_parser = require("body-parser")),
-  (axios = require("axios"));
+const port =process.env.PORT || 3001
+const express = require("express")
+const body_parser = require("body-parser")
+const axios = require("axios")
 
 app = express().use(body_parser.json());
 
@@ -21,31 +21,18 @@ app.post("/webhook", async (req, res) => {
       text: { body: "Ack: " + msg_body },
     };
 
-    console.log(JSON.stringify(req.body, null, 2));
+    // console.log(JSON.stringify(req.body, null, 2));
+    console.log(req.body);
 
-    // if (req.body.object) {
-    //   if (
-    //     req.body.entry &&
-    //     req.body.entry[0].changes &&
-    //     req.body.entry[0].changes[0] &&
-    //     req.body.entry[0].changes[0].value.messages &&
-    //     req.body.entry[0].changes[0].value.messages[0]
-    //   ) {
-
-    //   }
     await axios.post(url, data, config);
 
     return res.status(200);
-    // } else {
-    //   return res.status(404).json(error)
   } catch (error) {
     console.log(error.response);
     res.status(404).json(error);
   }
 });
 
-// Accepts GET requests at the /webhook endpoint. You need this URL to setup webhook initially.
-// info on verification request payload: https://developers.facebook.com/docs/graph-api/webhooks/getting-started#verification-requests
 app.get("/webhook", async (req, res) => {
   try {
     const verify_token = process.env.VERIFY_TOKEN;
@@ -62,6 +49,7 @@ app.get("/webhook", async (req, res) => {
         return res.status(404).json(error);
       }
     }
+    res.status(200).send("webhook");
   } catch (error) {
     console.log(error);
     res.status(404).json(error);
