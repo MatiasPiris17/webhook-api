@@ -10,29 +10,44 @@ app.listen(port, () => console.log("webhook is listening"));
 
 app.post("/webhook", async (req, res) => {
   try {
-    let from = req.body.entry[0].changes[0].value.messages[0].from;
-    let msg_body = req.body.entry[0].changes[0].value.messages[0].text.body;
-
-    const url = `https://graph.facebook.com/v17.0/108588405630526/messages?access_token=${token}`;
-    const config = { "Content-Type": "application/json" };
-    const data = {
-      messaging_product: "whatsapp",
-      to: from,
-      text: { body: "Ack: " + msg_body },
-    };
-
     console.log(JSON.stringify(req.body, null, 2));
-    // console.log('Incoming webhook: ' + JSON.stringify(req.body));
-    // console.log(JSON.stringify(data));
 
-    await axios.post(url, data, config);
-
-    return res.status(200);
-  } catch (error) {
+    if (req.body.object) {
+      if (
+        req.body.entry &&
+        req.body.entry[0].changes &&
+        req.body.entry[0].changes[0] &&
+        req.body.entry[0].changes[0].value.messages &&
+        req.body.entry[0].changes[0].value.messages[0]
+      ) {
+        let phone_number_id = 
+          req.body.entry[0].changes[0].value.metadata.phone_number_id;
+        let from = req.body.entry[0].changes[0].value.messages[0].from; // extract the phone number from the webhook payload
+        let msg_body = req.body.entry[0].changes[0].value.messages[0].text.body; // extract the message text from the webhook payload
+        await axios.post({
+          url:
+            "https://graph.facebook.com/v12.0/" +
+            phone_number_id +
+            "/messages?access_token=" +
+            token,
+          data: {
+            messaging_product: "whatsapp",
+            to: from,
+            text: { body: "Ack: " + msg_body },
+          },
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+      res.sendStatus(200);
+    } else {
+      res.sendStatus(404);
+    }
+  }
+  catch (error) {
     // console.log(error.response);
     res.status(404).json("Error" + {error: error.response});
   }
-});
+})
 
 app.get("/webhook", async (req, res) => {
   try {
