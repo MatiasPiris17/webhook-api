@@ -21,7 +21,7 @@ app.post("/webhook", async (req, res) => {
       text: { body: "Ack: " + msg_body },
     };
 
-    console.log(JSON.stringify(req.body, null, 2));
+    console.log(JSON.stringify(data));
 
     await axios.post(url, data, config);
 
