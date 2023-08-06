@@ -1,7 +1,7 @@
 const token = process.env.WHATSAPP_TOKEN;
-express = require("express"),
-body_parser = require("body-parser"),
-axios = require("axios");
+(express = require("express")),
+  (body_parser = require("body-parser")),
+  (axios = require("axios"));
 
 app = express().use(body_parser.json());
 
@@ -12,28 +12,31 @@ app.post("/webhook", async (req, res) => {
     let from = req.body.entry[0].changes[0].value.messages[0].from;
     let msg_body = req.body.entry[0].changes[0].value.messages[0].text.body;
 
-    const url = `https://graph.facebook.com/v17.0/108588405630526/messages?access_token=${token}`
-    const config = { "Content-Type": "application/json" }
-    const data = { messaging_product: "whatsapp", to: from, text: { body: "Ack: " + msg_body } }
+    const url = `https://graph.facebook.com/v17.0/108588405630526/messages?access_token=${token}`;
+    const config = { "Content-Type": "application/json" };
+    const data = {
+      messaging_product: "whatsapp",
+      to: from,
+      text: { body: "Ack: " + msg_body },
+    };
 
     console.log(JSON.stringify(req.body, null, 2));
 
-    if (req.body.object) { 
-      if (
-        req.body.entry &&
-        req.body.entry[0].changes &&
-        req.body.entry[0].changes[0] &&
-        req.body.entry[0].changes[0].value.messages &&
-        req.body.entry[0].changes[0].value.messages[0]
-      ) {
+    // if (req.body.object) {
+    //   if (
+    //     req.body.entry &&
+    //     req.body.entry[0].changes &&
+    //     req.body.entry[0].changes[0] &&
+    //     req.body.entry[0].changes[0].value.messages &&
+    //     req.body.entry[0].changes[0].value.messages[0]
+    //   ) {
 
-        await axios.post(url, data, config);
-      }
+    //   }
+    await axios.post(url, data, config);
 
-      return res.status(200)
-    } else {
-      return res.status(404).json(error)
-    }
+    return res.status(200);
+    // } else {
+    //   return res.status(404).json(error)
   } catch (error) {
     console.log(error);
     res.status(404).json(error);
@@ -45,17 +48,17 @@ app.post("/webhook", async (req, res) => {
 app.get("/webhook", async (req, res) => {
   try {
     const verify_token = process.env.VERIFY_TOKEN;
-  
+
     let mode = req.query["hub.mode"];
     let token = req.query["hub.verify_token"];
     let challenge = req.query["hub.challenge"];
-  
+
     if (mode && token) {
       if (mode === "subscribe" && token === verify_token) {
         console.log("WEBHOOK_VERIFIED");
         res.status(200).send(challenge);
       } else {
-        return res.status(404).json(error)
+        return res.status(404).json(error);
       }
     }
   } catch (error) {
