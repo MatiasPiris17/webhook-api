@@ -1,11 +1,12 @@
 const token = process.env.WHATSAPP_TOKEN;
+const port = process.env.PORT;
 (express = require("express")),
   (body_parser = require("body-parser")),
   (axios = require("axios"));
 
 app = express().use(body_parser.json());
 
-app.listen(3001, () => console.log("webhook is listening"));
+app.listen(port, () => console.log("webhook is listening"));
 
 app.post("/webhook", async (req, res) => {
   try {
