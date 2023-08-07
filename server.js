@@ -37,15 +37,14 @@ app.post("/webhook", async (req, res) => {
           headers: { "Content-Type": "application/json" },
         });
       }
+      const response = { //se cambia por body luego
+        nombre: req.body.entry[0].changes[0].value.contacts[0].profile.name,
+        numero: req.body.entry[0].changes[0].value.messages[0].from,
+        type: req.body.entry[0].changes[0].value.messages[0].type,
+        mensaje: req.body.entry[0].changes[0].value.messages[0].text.body,
+       }
+       console.log(JSON.stringify(response));
     } 
-    const response = { //se cambia por body luego
-      nombre: req.body.entry[0].changes[0].value.contacts[0].profile.name,
-      numero: req.body.entry[0].changes[0].value.messages[0].from,
-      type: req.body.entry[0].changes[0].value.messages[0].type,
-      mensaje: req.body.entry[0].changes[0].value.messages[0].text.body,
-     }
-
-    console.log(JSON.stringify(response));
 
     res.status(200)
   }
