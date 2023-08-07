@@ -46,7 +46,8 @@ app.post("/webhook", async (req, res) => {
       mensaje: body.entry[0].changes[0].value.messages[0].text.body,
      }
 
-    console.log(response)
+    console.log(JSON.stringify(response, null, 2));
+
     res.status(200)
   }
   catch (error) {
