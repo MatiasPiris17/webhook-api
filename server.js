@@ -10,7 +10,7 @@ app.listen(port, () => console.log("webhook is listening"));
 
 app.post("/webhook", async (req, res) => {
   try {
-    console.log(JSON.stringify(req.body, null, 2));
+    const body = req.body
 
     if (req.body.object) {
       if (
@@ -22,8 +22,8 @@ app.post("/webhook", async (req, res) => {
       ) {
         let phone_number_id = 
           req.body.entry[0].changes[0].value.metadata.phone_number_id;
-        let from = req.body.entry[0].changes[0].value.messages[0].from; // extract the phone number from the webhook payload
-        let msg_body = req.body.entry[0].changes[0].value.messages[0].text.body; // extract the message text from the webhook payload
+        let from = req.body.entry[0].changes[0].value.messages[0].from; 
+        let msg_body = req.body.entry[0].changes[0].value.messages[0].text.body;
         await axios.post({
           url:
             "https://graph.facebook.com/v12.0/" +
@@ -38,10 +38,16 @@ app.post("/webhook", async (req, res) => {
           headers: { "Content-Type": "application/json" },
         });
       }
-      res.sendStatus(200);
-    } else {
-      res.sendStatus(404);
-    }
+    } 
+    const response = { //se cambia por body luego
+      nombre: body.entry[0].changes[0].value.contacts[0].profile.name,
+      numero: body.entry[0].changes[0].value.messages[0].from,
+      type: body.entry[0].changes[0].value.messages[0].type,
+      mensaje: body.entry[0].changes[0].value.messages[0].text.body,
+     }
+
+    console.log(response)
+    res.status(200)
   }
   catch (error) {
     // console.log(error.response);
