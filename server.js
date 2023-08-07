@@ -9,6 +9,7 @@ app = express().use(body_parser.json());
 app.listen(port, () => console.log("webhook is listening"));
 
 app.post("/webhook", async (req, res) => {
+
   try {
 
     if (req.body.entry) {
@@ -17,7 +18,6 @@ app.post("/webhook", async (req, res) => {
         numero: req.body.entry[0].changes[0].value.messages[0].from,
         mensaje: req.body.entry[0].changes[0].value.messages[0].text.body,
      }
-     if(response.mensaje === "Si") {
       let phone_number_id = req.body.entry[0].changes[0].value.metadata.phone_number_id;
       let from = req.body.entry[0].changes[0].value.messages[0].from; 
       let msg_body = req.body.entry[0].changes[0].value.messages[0].text.body;
@@ -34,12 +34,9 @@ app.post("/webhook", async (req, res) => {
           },
           headers: { "Content-Type": "application/json" },
         })
-      }
+
       console.log(JSON.stringify(response))
       return res.status(200)
-    //  if (response) {
-    //   //  console.log(JSON.stringify(response, null, 2))
-    //  } /*else console.log(JSON.stringify(response))*/
   }
 
 
