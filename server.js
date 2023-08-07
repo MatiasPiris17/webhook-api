@@ -15,7 +15,6 @@ app.post("/webhook", async (req, res) => {
       const response = {
         nombre: req.body.entry[0].changes[0].value.contacts[0].profile.name,
         numero: req.body.entry[0].changes[0].value.messages[0].from,
-        type: req.body.entry[0].changes[0].value.messages[0].type,
         mensaje: req.body.entry[0].changes[0].value.messages[0].text.body,
      }
      if(response.mensaje === "Si") {
@@ -35,9 +34,9 @@ app.post("/webhook", async (req, res) => {
           },
           headers: { "Content-Type": "application/json" },
         })
-        console.log(JSON.stringify(response))
       }
-
+      console.log(JSON.stringify(response))
+      return res.status(200)
     //  if (response) {
     //   //  console.log(JSON.stringify(response, null, 2))
     //  } /*else console.log(JSON.stringify(response))*/
