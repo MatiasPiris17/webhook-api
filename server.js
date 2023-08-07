@@ -10,7 +10,19 @@ app.listen(port, () => console.log("webhook is listening"));
 
 app.post("/webhook", async (req, res) => {
   try {
-    console.log(JSON.stringify(req.body.entry, null, 2));
+
+     if (req.body.entry) {
+      const response = {
+        nombre: req.body.entry[0].changes[0].value.contacts[0].profile.name,
+        numero: req.body.entry[0].changes[0].value.messages[0].from,
+        type: req.body.entry[0].changes[0].value.messages[0].type,
+        mensaje: req.body.entry[0].changes[0].value.messages[0].text.body,
+     }
+     if (response) {
+       console.log(JSON.stringify(response, null, 2))
+     } else console.log(JSON.stringify(response))
+     }
+
 
     if (req.body.object) {
       if (
@@ -39,12 +51,6 @@ app.post("/webhook", async (req, res) => {
         });
       }
     } 
-    // const response = {
-    //   nombre: req.body.entry[0].changes[0].value.contacts[0].profile.name,
-    //   numero: req.body.entry[0].changes[0].value.messages[0].from,
-    //   type: req.body.entry[0].changes[0].value.messages[0].type,
-    //   mensaje: req.body.entry[0].changes[0].value.messages[0].text.body,
-    //  }
 
     res.status(200)
   }
