@@ -17,18 +17,18 @@ app.post("/webhook", async (req, res) => {
         nombre: req.body.entry[0].changes[0].value.contacts[0].profile.name,
         numero: req.body.entry[0].changes[0].value.messages[0].from,
         mensaje: req.body.entry[0].changes[0].value.messages[0].text.body,
-     }
+     }    
+          if (response.mensaje === "Si") {
+
      console.log(JSON.stringify(response))
 
       let phone_number_id = req.body.entry[0].changes[0].value.metadata.phone_number_id;
       let from = req.body.entry[0].changes[0].value.messages[0].from; 
       let msg_body = req.body.entry[0].changes[0].value.messages[0].text.body;
-        await axios.post({
-          url:
-            "https://graph.facebook.com/v12.0/" +
-            phone_number_id +
-            "/messages?access_token=" +
-            token,
+
+        await axios.post(
+          "https://graph.facebook.com/v12.0/" + phone_number_id +"/messages?access_token=" + token,
+        {
           data: {
             messaging_product: "whatsapp",
             to: from,
@@ -36,6 +36,7 @@ app.post("/webhook", async (req, res) => {
           },
           headers: { "Content-Type": "application/json" },
         })
+      }
       
       return res.status(200)
   }
