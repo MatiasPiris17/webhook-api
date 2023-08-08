@@ -11,6 +11,11 @@ app.listen(port, () => console.log("webhook is listening"));
 app.post("/webhook", async (req, res) => {
 
   try {
+    let phone_number_id = req.body.entry[0].changes[0].value.metadata.phone_number_id;
+    const url ="https://graph.facebook.com/v12.0/" + phone_number_id +"/messages?access_token=" + token
+    let from = req.body.entry[0].changes[0].value.messages[0].from;
+    let msg_body = req.body.entry[0].changes[0].value.messages[0].text.body;
+
     if (req.body.entry) {
       const response = {
         nombre: req.body.entry[0].changes[0].value.contacts[0].profile.name,
@@ -19,12 +24,11 @@ app.post("/webhook", async (req, res) => {
             }    
       if (response.mensaje === "Si") {
         console.log(JSON.stringify(response))
-        let phone_number_id = req.body.entry[0].changes[0].value.metadata.phone_number_id;
-        let from = req.body.entry[0].changes[0].value.messages[0].from; 
-        let msg_body = req.body.entry[0].changes[0].value.messages[0].text.body;
+        // let phone_number_id = req.body.entry[0].changes[0].value.metadata.phone_number_id;
+        // let from = req.body.entry[0].changes[0].value.messages[0].from; 
+        // let msg_body = req.body.entry[0].changes[0].value.messages[0].text.body;
 
-        await axios.post(
-          "https://graph.facebook.com/v12.0/" + phone_number_id +"/messages?access_token=" + token,
+        await axios.post( url,
         {
           data: {
             messaging_product: "whatsapp",
@@ -34,6 +38,14 @@ app.post("/webhook", async (req, res) => {
           headers: { "Content-Type": "application/json" },
         })
       } else {
+        await axios.post(url, {
+          data: {
+            messaging_product: "whatsapp",
+            to: from,
+            text: { body: "Ack: " + msg_body },
+          },
+          headers: { "Content-Type": "application/json" },
+        })
         console.log("La respuesta del usuario no es un mensaje de Si")
         return res.status(200)
       }
