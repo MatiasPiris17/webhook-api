@@ -19,7 +19,7 @@ app.post("/webhook", async (req, res) => {
         numero: req.body.entry[0].changes[0].value.messages[0].from,
         mensaje: req.body.entry[0].changes[0].value.messages[0].button.text
       }    
-        let numero = response.mensaje
+        const {numero, nombre} = response
         const phone = validationPhone(numero)
 
         let phone_number_id = req.body.entry[0].changes[0].value.metadata.phone_number_id;
@@ -35,8 +35,8 @@ app.post("/webhook", async (req, res) => {
           headers: { "Content-Type": "application/json" },
         })
         if (response.mensaje === "Si") {
-          console.log(`El guardian ${response.nombre} va a recibir el paquete`)
-          const guardianResponse = response.mensaje 
+          console.log(`El guardian ${nombre} va a recibir el paquete`)
+          const phoneguardian = phone //aca se guarda el numero del guardian
         }
       return res.status(200)
   }
