@@ -11,16 +11,16 @@ app.listen(port, () => console.log("webhook is listening"));
 app.post("/webhook", async (req, res) => {
 
   try {
- console.log(JSON.stringify(req.body, null, 2))
- 
+//  console.log(JSON.stringify(req.body, null, 2))
+
     if (req.body.entry) {
       const response = {
         nombre: req.body.entry[0].changes[0].value.contacts[0].profile.name,
         numero: req.body.entry[0].changes[0].value.messages[0].from,
-        mensaje: req.body.entry[0].changes[0].value.messages[0].text.body,
-            }    
-
+        mensaje: req.body.entry[0].changes[0].value.messages[0].interactive.button_reply.title
+      }    
         console.log(JSON.stringify(response)) //agregar validacion del numero
+
         let phone_number_id = req.body.entry[0].changes[0].value.metadata.phone_number_id;
         let from = req.body.entry[0].changes[0].value.messages[0].from; 
         let msg_body = req.body.entry[0].changes[0].value.messages[0].text.body;
