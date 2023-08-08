@@ -3,6 +3,7 @@ const port =process.env.PORT || 3001
 const express = require("express")
 const body_parser = require("body-parser")
 const axios = require("axios")
+const {validationPhone} = require('./controllador')
 
 app = express().use(body_parser.json());
 
@@ -13,35 +14,35 @@ app.post("/webhook", async (req, res) => {
   try {
     
     if (req.body.entry) {
-      // console.log(JSON.stringify(req.body.entry))
       const response = {
         nombre: req.body.entry[0].changes[0].value.contacts[0].profile.name,
         numero: req.body.entry[0].changes[0].value.messages[0].from,
         mensaje: req.body.entry[0].changes[0].value.messages[0].button.text
       }    
-        console.log(JSON.stringify(response)) //agregar validacion del numero
+       const phone = validationPhone(response.numero)
 
         let phone_number_id = req.body.entry[0].changes[0].value.metadata.phone_number_id;
-        let from = req.body.entry[0].changes[0].value.messages[0].from; 
-        let msg_body = req.body.entry[0].changes[0].value.messages[0].interactive.button_reply.title;
 
         await axios.post(
           "https://graph.facebook.com/v12.0/" + phone_number_id +"/messages?access_token=" + token,
         {
           data: {
             messaging_product: "whatsapp",
-            to: from,
-            text: { body: "Ack: " + msg_body },
+            to: phone,
+            text: { body: "Ack: " + response.mensaje },
           },
           headers: { "Content-Type": "application/json" },
         })
+        if (response.mensaje === "Si") {
+          console.log(`El guardian ${response.nombre} va a recibir el paquete`)
+        }
       return res.status(200)
   }
 
     res.status(200)
   }
   catch (error) {
-    // console.log(error.response);
+    console.log(error);
     res.status(404).json("Error" + {error: error.response});
   }
 })
