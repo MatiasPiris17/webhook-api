@@ -15,9 +15,9 @@ async function validationPhone(phoneNumber) {
         return "Numero invalido"
       }
   
-    const number = modifiedPhoneNumber.phoneNumber;
+      phoneNumber = modifiedPhoneNumber.phoneNumber;
 
-    return number
+    return phoneNumber
 }
 
 module.exports = { validationPhone };

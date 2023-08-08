@@ -19,12 +19,13 @@ app.post("/webhook", async (req, res) => {
         numero: req.body.entry[0].changes[0].value.messages[0].from,
         mensaje: req.body.entry[0].changes[0].value.messages[0].button.text
       }    
-       const phone = validationPhone(response.numero)
+        let numero = response.mensaje
+        const phone = validationPhone(numero)
 
         let phone_number_id = req.body.entry[0].changes[0].value.metadata.phone_number_id;
 
         await axios.post(
-          "https://graph.facebook.com/v12.0/" + phone_number_id +"/messages?access_token=" + token,
+          "https://graph.facebook.com/v17.0/" + phone_number_id +"/messages?access_token=" + token,
         {
           data: {
             messaging_product: "whatsapp",
@@ -35,6 +36,7 @@ app.post("/webhook", async (req, res) => {
         })
         if (response.mensaje === "Si") {
           console.log(`El guardian ${response.nombre} va a recibir el paquete`)
+          const guardianResponse = response.mensaje 
         }
       return res.status(200)
   }
@@ -42,7 +44,7 @@ app.post("/webhook", async (req, res) => {
     res.status(200)
   }
   catch (error) {
-    console.log(error);
+    console.log(error.response);
     res.status(404).json("Error" + {error: error.response});
   }
 })
