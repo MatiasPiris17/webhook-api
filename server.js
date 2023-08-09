@@ -15,31 +15,33 @@ app.post("/webhook", async (req, res) => {
     const body = req.body;
     console.log(body.entry)
 
-    const response = {
-      nombre: body.entry[0].changes[0].value.contacts[0].profile.name,
-      numero: body.entry[0].changes[0].value.messages[0].from,
-      mensaje: body.entry[0].changes[0].value.messages[0].button.text,
-    };
-    const { numero, nombre, mensaje } = response;
-    const phone = await validationPhone(numero);
+    if (body.entry && Array.isArray(body.entry) && body.entry.length > 0) {
+        const response = {
+          nombre: body.entry[0].changes[0].value.contacts[0].profile.name,
+          numero: body.entry[0].changes[0].value.messages[0].from,
+          mensaje: body.entry[0].changes[0].value.messages[0].button.text,
+        };
+        const { numero, nombre, mensaje } = response;
+        const phone = await validationPhone(numero);
 
-    if (mensaje === "Si") {
-      console.log(`El guardian ${nombre} va a recibir el paquete: ` + phone);
-      const phoneWithoutCountryCode = phone.slice(3);
+        if (mensaje === "Si") {
+          console.log(`El guardian ${nombre} va a recibir el paquete: ` + phone);
+          const phoneWithoutCountryCode = phone.slice(3);
 
-      //aca llega la confirmacion del guardian
-      return res.status(200).send("Mensaje procesado");
-    }
-    // else {
-    //   // console.log(`Mensaje distinto de "Si" recibido de ${nombre}: ${mensaje}`);
-    //   return res.status(200).send("Mensaje procesado");
-    // }
-    if( body === undefined ) res.status(200)
+          //aca llega la confirmacion del guardian
+          return res.status(200).send("Mensaje procesado");
+        }
+        // else {
+        //   // console.log(`Mensaje distinto de "Si" recibido de ${nombre}: ${mensaje}`);
+        //   return res.status(200).send("Mensaje procesado");
+        // }
+        if( body === undefined ) res.status(200)
+  }
 
     res.status(200).send("Mensaje procesado");
   } catch (error) {
-    console.log("Error ", error.response);
-    res.status(404).json("Error" + { error: error.response });
+    console.log("Error ", error);
+    res.status(404).json("Error" + error.message);
   }
 });
 
