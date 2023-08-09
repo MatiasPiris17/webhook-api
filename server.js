@@ -20,7 +20,7 @@ app.post("/webhook", async (req, res) => {
         mensaje: req.body.entry[0].changes[0].value.messages[0].button.text
       }    
         const {numero, nombre, mensaje} = response
-        const phone = validationPhone(numero)
+        const phone = await validationPhone(numero)
 
         console.log(phone)
 
