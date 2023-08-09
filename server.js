@@ -13,10 +13,8 @@ app.listen(port, () => console.log("webhook is listening"));
 app.post("/webhook", async (req, res) => {
   try {
     const body = req.body;
-    console.log(body.entry)
 
-    if (body.entry && Array.isArray(body.entry)) {
-      
+    if (body.entry[0]) {
         const response = {
           nombre: body.entry[0].changes[0].value.contacts[0].profile.name,
           numero: body.entry[0].changes[0].value.messages[0].from,
@@ -36,7 +34,6 @@ app.post("/webhook", async (req, res) => {
         //   // console.log(`Mensaje distinto de "Si" recibido de ${nombre}: ${mensaje}`);
         //   return res.status(200).send("Mensaje procesado");
         // }
-        if( body === undefined ) res.status(200)
   }
 
     res.status(200).send("Mensaje procesado");
