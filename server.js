@@ -22,25 +22,28 @@ app.post("/webhook", async (req, res) => {
         const {numero, nombre, mensaje} = response
         const phone = validationPhone(numero)
 
+        console.log(phone)
+
         let phone_number_id = req.body.entry[0].changes[0].value.metadata.phone_number_id;
 
         const data = {
           messaging_product: "whatsapp",
             to: phone,
-            text: { body: "Ack: " + response.mensaje },
+            text: { body: "Ack: " + mensaje },
         } 
+
         const config = {  "Content-Type": "application/json"}
 
         await axios.post(
           "https://graph.facebook.com/v17.0/" + phone_number_id +"/messages?access_token=" + token,
           data, config)
 
-          console.log(response)
         if (mensaje === "Si") {
           console.log(`El guardian ${nombre} va a recibir el paquete`)
-          const phoneguardian = phone //aca se guarda el numero del guardian
-          console.log(phoneguardian)
+          // const phoneguardian = phone
+          // console.log(phoneguardian)
         }
+
       return res.status(200)
   }
 
@@ -51,6 +54,7 @@ app.post("/webhook", async (req, res) => {
     res.status(404).json("Error" + {error: error.response});
   }
 })
+
 
 app.get("/webhook", async (req, res) => {
   try {
