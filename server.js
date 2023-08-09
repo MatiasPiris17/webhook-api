@@ -34,6 +34,8 @@ app.post("/webhook", async (req, res) => {
         await axios.post(
           "https://graph.facebook.com/v17.0/" + phone_number_id +"/messages?access_token=" + token,
           data, config)
+
+          console.log(response)
         if (mensaje === "Si") {
           console.log(`El guardian ${nombre} va a recibir el paquete`)
           const phoneguardian = phone //aca se guarda el numero del guardian
@@ -45,7 +47,7 @@ app.post("/webhook", async (req, res) => {
     res.status(200)
   }
   catch (error) {
-    console.log(error.response);
+    // console.log(error.response);
     res.status(404).json("Error" + {error: error.response});
   }
 })
