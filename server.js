@@ -20,36 +20,32 @@ app.post("/webhook", async (req, res) => {
       const { numero, nombre, mensaje } = response;
       const phone = await validationPhone(numero);
 
+      // let phone_number_id =
+      //   req.body.entry[0].changes[0].value.metadata.phone_number_id;
 
-      let phone_number_id =
-        req.body.entry[0].changes[0].value.metadata.phone_number_id;
+      // const data = {
+      //   messaging_product: "whatsapp",
+      //   to: phone,
+      //   text: { body: "Ack: " + mensaje },
+      // };
 
-      const data = {
-        messaging_product: "whatsapp",
-        to: phone,
-        text: { body: "Ack: " + mensaje },
-      };
+      // const config = { "Content-Type": "application/json" };
 
-      const config = { "Content-Type": "application/json" };
-
-      await axios.post(
-        "https://graph.facebook.com/v17.0/" +
-          phone_number_id +
-          "/messages?access_token=" +
-          token,
-        data,
-        config
-      );
+      // await axios.post(
+      //   "https://graph.facebook.com/v17.0/" +
+      //     phone_number_id +
+      //     "/messages?access_token=" +
+      //     token,
+      //   data,
+      //   config
+      // );
 
       if (mensaje === "Si") {
-        console.log(`El guardian ${nombre} va a recibir el paquete`);
+        console.log(`El guardian ${nombre} va a recibir el paquete: ` + phone);
         //aca llegua la confirmacion del guardian
         return res.status(200);
-      } else if (mensaje === "No") {
-        console.log(`El guardian ${nombre} NO va a recibir el paquete`);
-        return res.status(200);
-      } else {
-        console.log("El usuario mando un mensaje distinto: " + req.body);
+      } else if (mensaje != "Si") {
+        console.log(`El usuario mando un mensaje distinto: ${req.body}`);
         return res.status(200);
       }
 
