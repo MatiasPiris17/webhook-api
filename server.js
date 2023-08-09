@@ -12,7 +12,7 @@ app.listen(port, () => console.log("webhook is listening"));
 
 app.post("/webhook", async (req, res) => {
   try {
-    const { body } = req.body;
+    const body = req.body;
 
     const response = {
       nombre: body.entry[0].changes[0].value.contacts[0].profile.name,
