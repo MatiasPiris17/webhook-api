@@ -11,7 +11,7 @@ app.listen(port, () => console.log("webhook is listening"));
 
 app.post("/webhook", async (req, res) => {
   try {
-    if (req.body.entry) {
+    if (req.body.entry) { 
       const response = {
         nombre: req.body.entry[0].changes[0].value.contacts[0].profile.name,
         numero: req.body.entry[0].changes[0].value.messages[0].from,
@@ -19,6 +19,23 @@ app.post("/webhook", async (req, res) => {
       };
       const { numero, nombre, mensaje } = response;
       const phone = await validationPhone(numero);
+
+      if (mensaje === "Si") {
+        console.log(`El guardian ${nombre} va a recibir el paquete: ` + phone);
+        //aca llega la confirmacion del guardian
+        return res.status(200).send("Mensaje procesado");
+      } else {
+        console.log(`Mensaje distinto de "Si" recibido de ${nombre}: ${mensaje}`);
+        return res.status(200).send("Mensaje procesado");
+      }
+    }
+
+    res.status(200).send("Mensaje procesado");
+  } catch (error) {
+    console.log(error.response);
+    res.status(404).json("Error" + { error: error.response });
+  }
+});
 
       // let phone_number_id =
       //   req.body.entry[0].changes[0].value.metadata.phone_number_id;
@@ -39,23 +56,6 @@ app.post("/webhook", async (req, res) => {
       //   data,
       //   config
       // );
-
-      if (mensaje === "Si") {
-        console.log(`El guardian ${nombre} va a recibir el paquete: ` + phone);
-        //aca llega la confirmacion del guardian
-        return res.status(200).send("Mensaje procesado");
-      } else {
-        console.log(`Mensaje distinto de "Si" recibido de ${nombre}: ${mensaje}`);
-        return res.status(200).send("Mensaje procesado");
-      }
-    }
-
-    res.status(200).send("Mensaje procesado");
-  } catch (error) {
-    console.log(error.response);
-    res.status(404).json("Error" + { error: error.response });
-  }
-});
 
 app.get("/webhook", async (req, res) => {
   try {
