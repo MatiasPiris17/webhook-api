@@ -14,27 +14,28 @@ app.post("/webhook", async (req, res) => {
   try {
     const body = req.body;
 
-    if (body.entry[0]) {
+    if (body.entry) {
         const response = {
-          nombre: body.entry[0].changes[0].value.contacts[0].profile.name,
-          numero: body.entry[0].changes[0].value.messages[0].from,
-          mensaje: body.entry[0].changes[0].value.messages[0].button.text,
-        };
-        const { numero, nombre, mensaje } = response;
-        const phone = await validationPhone(numero);
-
-        if (mensaje === "Si") {
-          console.log(`El guardian ${nombre} va a recibir el paquete: ` + phone);
-          const phoneWithoutCountryCode = phone.slice(3);
-
-          //aca llega la confirmacion del guardian
-          return res.status(200).send("Mensaje procesado");
+          nombre: body.entry[0]?.changes[0]?.value?.contacts[0]?.profile?.name,
+          numero: body.entry[0]?.changes[0]?.value?.messages[0]?.from,
+          mensaje: body.entry[0]?.changes[0]?.value?.messages[0]?.button?.text,
         }
-        // else {
-        //   // console.log(`Mensaje distinto de "Si" recibido de ${nombre}: ${mensaje}`);
-        //   return res.status(200).send("Mensaje procesado");
-        // }
-  }
+        const { numero, nombre, mensaje } = response;
+        if(numero & nombre & mensaje){
+          const phone = await validationPhone(numero);
+  
+          if (mensaje === "Si") {
+            console.log(`El guardian ${nombre} va a recibir el paquete: ` + phone);
+            const phoneWithoutCountryCode = phone.slice(3);
+  
+            //aca llega la confirmacion del guardian
+            return res.status(200).send("Mensaje procesado");
+          } 
+        }
+      }else {
+        console.log(`El guardian mando un mensaje que no corresponse a Si`);
+        return res.status(200).send("Mensaje procesado");
+      }
 
     res.status(200).send("Mensaje procesado");
   } catch (error) {
