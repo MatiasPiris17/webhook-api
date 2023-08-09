@@ -15,7 +15,8 @@ app.post("/webhook", async (req, res) => {
     const body = req.body;
     console.log(body.entry)
 
-    if (body.entry && Array.isArray(body.entry) && body.entry.length > 0) {
+    if (body.entry && Array.isArray(body.entry)) {
+      
         const response = {
           nombre: body.entry[0].changes[0].value.contacts[0].profile.name,
           numero: body.entry[0].changes[0].value.messages[0].from,
