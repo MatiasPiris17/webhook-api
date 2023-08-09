@@ -33,6 +33,7 @@ app.post("/webhook", async (req, res) => {
     //   // console.log(`Mensaje distinto de "Si" recibido de ${nombre}: ${mensaje}`);
     //   return res.status(200).send("Mensaje procesado");
     // }
+    if( body === undefined ) res.status(200)
 
     res.status(200).send("Mensaje procesado");
   } catch (error) {
