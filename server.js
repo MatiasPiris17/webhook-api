@@ -42,17 +42,15 @@ app.post("/webhook", async (req, res) => {
 
       if (mensaje === "Si") {
         console.log(`El guardian ${nombre} va a recibir el paquete: ` + phone);
-        //aca llegua la confirmacion del guardian
-        return res.status(200);
-      } else if (mensaje != "Si") {
-        console.log(`El usuario mando un mensaje distinto: ${req.body}`);
-        return res.status(200);
+        //aca llega la confirmacion del guardian
+        return res.status(200).send("Mensaje procesado");
+      } else {
+        console.log(`Mensaje distinto de "Si" recibido de ${nombre}: ${mensaje}`);
+        return res.status(200).send("Mensaje procesado");
       }
-
-      return res.status(200);
     }
 
-    res.status(200);
+    res.status(200).send("Mensaje procesado");
   } catch (error) {
     console.log(error.response);
     res.status(404).json("Error" + { error: error.response });
