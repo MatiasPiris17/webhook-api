@@ -34,7 +34,7 @@ app.post("/webhook", async (req, res) => {
 
       const phone = await validationPhone(phoneGuardian);
 
-      if (mensaje === "Si") {
+      if (messageGuardian === "Si") {
         console.log(
           `El guardian ${nameGuardian} va a recibir el paquete: ` + phone
         );
