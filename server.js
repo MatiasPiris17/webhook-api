@@ -35,18 +35,20 @@ app.post("/webhook", async (req, res) => {
       const phone = await validationPhone(phoneGuardian);
 
       if (messageGuardian === "Si") {
-        console.log(
-          `El guardian ${nameGuardian} va a recibir el paquete: ` + phone
-        );
+        console.log(`El guardian ${nameGuardian} va a recibir el paquete: ${phone}`);
         const phoneWithoutCountryCode = phone.slice(3);
 
         //aca llega la confirmacion del guardian
 
         return res.status(200).send("Mensaje procesado");
       }
+      if(messageGuardian === "No"){
+        console.log(`El guardian ${nameGuardian} NO va a recibir el paquete:`);
+        return res.status(200).send("Mensaje procesado")
+      }
     } else {
-      console.log(`El guardian mando un mensaje que no corresponse a Si`);
-      return res.status(200).send("Mensaje procesado");
+      console.log(`Mensaje omitido`);
+      return res.status(200).send("Mensaje omitido");
     }
 
     res.status(200).send("Mensaje procesado");
