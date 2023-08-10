@@ -14,7 +14,17 @@ app.post("/webhook", async (req, res) => {
   try {
     const body = req.body;
 
-    if (body.entry) {
+    if (body.entry &&
+      Array.isArray(body.entry) &&
+      body.entry.length > 0 &&
+      body.entry[0]?.changes &&
+      Array.isArray(body.entry[0].changes) &&
+      body.entry[0].changes.length > 0 &&
+      body.entry[0].changes[0]?.value &&
+      body.entry[0].changes[0].value.contacts &&
+      Array.isArray(body.entry[0].changes[0].value.contacts) &&
+      body.entry[0].changes[0].value.contacts.length > 0) {
+        
         const response = {
           nombre: body.entry[0]?.changes[0]?.value?.contacts[0]?.profile?.name,
           numero: body.entry[0]?.changes[0]?.value?.messages[0]?.from,
