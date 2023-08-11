@@ -1,10 +1,10 @@
 // const token = process.env.WHATSAPP_TOKEN;
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3002;
 const express = require("express");
 const body_parser = require("body-parser");
 // const axios = require("axios");
 const { validationPhone } = require("./controllador");
-// const { Guardian } = require("../../db");
+// const { Guardian } = require("../timbring-backend/src/db");
 
 app = express().use(body_parser.json());
 
@@ -12,6 +12,9 @@ app.listen(port, () => console.log("webhook is listening"));
 
 app.post("/webhook", async (req, res) => {
   try {
+
+    console.log(JSON.stringify(req.body, null, 2));
+
     const body = req.body;
 
     if (
@@ -36,9 +39,21 @@ app.post("/webhook", async (req, res) => {
 
       if (messageGuardian === "Si") {
         console.log(`El guardian ${nameGuardian} va a recibir el paquete: ${phone}`);
-        const phoneWithoutCountryCode = phone.slice(3);
+        const phoneWithoutCountryCode = phone.slice(3) //Solamente para Argentina
+        //Buscar en la tabla de "guardianes" que guardian coincide con (phoneWithoutCountryCode)
 
-        //aca llega la confirmacion del guardian
+        //El guardian que coincide le extraigo el id_guardian
+
+        //Busco el id_packege y busco en la tabla "compras"
+ 
+        //Buscar en la tabla de "compras" si ya hay un guardian asignado para recibir la compra
+
+        //Si hay un guardian asignado, se realiza una peticion post enviando el template de la historia "Mensaje Whatsapp Otros Guardianes 3"
+
+        //Si no hay un guardian asignado, se realiza una peticion post enviando el template de la historia "Mensaje Whatsapp Recepción 1"
+
+        //Por ultimo, se envia un mensaje al usuario avisando que guardian va a recibir su compra, utilizando el template de la historia "Mensaje Whatsapp Usuario 2"
+
 
         return res.status(200).send("Mensaje procesado");
       }
@@ -94,7 +109,7 @@ app.get("/webhook", async (req, res) => {
         return res.status(404).json(error);
       }
     }
-    res.status(200).send("webhook");
+    res.status(200).send("WEBHOOK_VERIFIED");
   } catch (error) {
     console.log(error);
     res.status(404).json(error);
