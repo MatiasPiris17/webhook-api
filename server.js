@@ -13,7 +13,7 @@ app.listen(port, () => console.log("webhook is listening"));
 app.post("/webhook", async (req, res) => {
   try {
 
-    console.log(JSON.stringify(req.body, null, 2));
+    // console.log(JSON.stringify(req.body, null, 2));
 
     const body = req.body;
 
