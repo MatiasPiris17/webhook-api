@@ -12,6 +12,7 @@ app.listen(port, () => console.log("webhook is listening"));
 
 app.post("/webhook", async (req, res) => {
   try {
+
     // console.log(JSON.stringify(req.body, null, 2));
 
     const body = req.body;
@@ -37,24 +38,24 @@ app.post("/webhook", async (req, res) => {
       const phone = await validationPhone(phoneGuardian);
 
       if (messageGuardian === "Si") {
-        console.log(
-          `El guardian ${nameGuardian} va a recibir el paquete: ${phone}`
-        );
+        console.log(`El guardian ${nameGuardian} va a recibir el paquete: ${phone}`);
 
-        //Separacion del country code con el numero de telefono para buscar en db:
+        //Separacion del country code con el numero de telefono para buscar en db
+
         // const modifiedPhoneNumber = phone(phone)
         // const country_code = modifiedPhoneNumber.countryCode;
         // const user_phone = modifiedPhoneNumber.phoneNumber.slice(country_code.length)
 
         const idMessage = body.entry[0].changes[0].value.messages[0].context.id;
 
-        console.log("Respuesta SI ID: ", idMessage);
+        console.log("Respuesta SI ID: ", idMessage)
 
-        //Buscar en la tabla de "guardianes" que guardian coincide con (user_phone)
+
+        //Buscar en la tabla de "guardianes" que guardian coincide con (phoneWithoutCountryCode)
         //Tambien tiene que coincir con el id_packege que extraigo de originalMessage
 
         //Busco el id_packege y busco en la tabla "compras"
-
+ 
         //Buscar en la tabla de "compras" si ya hay un guardian asignado para recibir la compra
 
         //Si hay un guardian asignado, se realiza una peticion post enviando el template de la historia "Mensaje Whatsapp Otros Guardianes 3"
@@ -63,19 +64,19 @@ app.post("/webhook", async (req, res) => {
 
         //Por ultimo, se envia un mensaje al usuario avisando que guardian va a recibir su compra, utilizando el template de la historia "Mensaje Whatsapp Usuario 2"
 
+
         return res.status(200).send("Mensaje procesado");
       }
-      if (messageGuardian === "No") {
-        const idMessage = body.entry[0].changes[0].value.messages[0].context.id;
+      if(messageGuardian === "No"){
         // console.log(`El guardian ${nameGuardian} NO va a recibir el paquete:`);
-        // console.log("Respuesta NO ID: ", idMessage);
-        return res.status(200).send("Mensaje procesado");
+        // console.log("Respuesta NO ID: ", idMessage)
+        return res.status(200).send("Mensaje procesado")
       }
     } else {
       // console.log(`Mensaje omitido`);
 
-      const id = body.entry[0].changes[0].value.statuses[0].id;
-      // console.log("ID", id);
+      const id = body.entry[0].changes[0].value.statuses[0].id
+      console.log("ID" ,id)
 
       return res.status(200).send("Mensaje omitido");
     }
