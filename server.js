@@ -39,13 +39,18 @@ app.post("/webhook", async (req, res) => {
 
       if (messageGuardian === "Si") {
         console.log(`El guardian ${nameGuardian} va a recibir el paquete: ${phone}`);
-        const phoneWithoutCountryCode = phone.slice(3) //Solamente para Argentina
+
+        //Separacion del country code con el numero de telefono para buscar en db
+        const modifiedPhoneNumber = phone(phone)
+        const country_code = modifiedPhoneNumber.countryCode;
+        const user_phone = modifiedPhoneNumber.phoneNumber.slice(country_code.length)
+
 
         const originalMessage = body.entry[0].changes[0].value.messages[0].context.id;
-        const regex = /\(número: (\d+)\)/;
+        const regex = /wamid\.HBg(\w+)/;
         const match = originalMessage.match(regex);
+        console.log(match)
 
-        console.log(originalMessage)
         // if (match) {
         //   const purchaseId = match[1];
         //   console.log("ID de la compra:", purchaseId);
