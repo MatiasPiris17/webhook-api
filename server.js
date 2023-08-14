@@ -41,7 +41,7 @@ app.post("/webhook", async (req, res) => {
         console.log(`El guardian ${nameGuardian} va a recibir el paquete: ${phone}`);
         const phoneWithoutCountryCode = phone.slice(3) //Solamente para Argentina
 
-        const originalMessage = response.entry[0].changes[0].value.messages[0].context.id;
+        const originalMessage = body.entry[0].changes[0].value.messages[0].context.id;
         const regex = /\(número: (\d+)\)/;
         const match = originalMessage.match(regex);
 
