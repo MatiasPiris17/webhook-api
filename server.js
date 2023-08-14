@@ -41,9 +41,9 @@ app.post("/webhook", async (req, res) => {
         console.log(`El guardian ${nameGuardian} va a recibir el paquete: ${phone}`);
 
         //Separacion del country code con el numero de telefono para buscar en db
-        const modifiedPhoneNumber = phone(phone)
-        const country_code = modifiedPhoneNumber.countryCode;
-        const user_phone = modifiedPhoneNumber.phoneNumber.slice(country_code.length)
+        // const modifiedPhoneNumber = phone(phone)
+        // const country_code = modifiedPhoneNumber.countryCode;
+        // const user_phone = modifiedPhoneNumber.phoneNumber.slice(country_code.length)
 
 
         const originalMessage = body.entry[0].changes[0].value.messages[0].context.id;
