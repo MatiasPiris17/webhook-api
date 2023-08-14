@@ -15,8 +15,9 @@ app.post("/webhook", async (req, res) => {
 
     // console.log(JSON.stringify(req.body, null, 2));
 
-    console.log(body.entry[0].changes[0].value.messages[0].context.id)
+
     const body = req.body;
+    console.log(body.entry[0].changes[0].value.messages[0].context.id)
 
     if (
       body.entry &&
