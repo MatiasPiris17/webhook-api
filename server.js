@@ -15,9 +15,7 @@ app.post("/webhook", async (req, res) => {
 
     // console.log(JSON.stringify(req.body, null, 2));
 
-
     const body = req.body;
-    console.log(body.entry[0].changes[0].value.messages[0].context.id)
 
     if (
       body.entry &&
@@ -39,6 +37,7 @@ app.post("/webhook", async (req, res) => {
 
       const phone = await validationPhone(phoneGuardian);
 
+
       if (messageGuardian === "Si") {
         console.log(`El guardian ${nameGuardian} va a recibir el paquete: ${phone}`);
 
@@ -49,6 +48,8 @@ app.post("/webhook", async (req, res) => {
         // const user_phone = modifiedPhoneNumber.phoneNumber.slice(country_code.length)
 
         const idMessage = body.entry[0].changes[0].value.messages[0].context.id;
+
+        console.log("Respuesta SI ID: ", idMessage)
 
 
         //Buscar en la tabla de "guardianes" que guardian coincide con (phoneWithoutCountryCode)
@@ -68,11 +69,17 @@ app.post("/webhook", async (req, res) => {
         return res.status(200).send("Mensaje procesado");
       }
       if(messageGuardian === "No"){
+        const idMessage = body.entry[0].changes[0].value.messages[0].context.id;
         console.log(`El guardian ${nameGuardian} NO va a recibir el paquete:`);
+        console.log("Respuesta NO ID: ", idMessage)
         return res.status(200).send("Mensaje procesado")
       }
     } else {
-      console.log(`Mensaje omitido`);
+      // console.log(`Mensaje omitido`);
+
+      const id = body.entry[0].changes[0].value.statuses[0].id
+      console.log("ID" ,id)
+
       return res.status(200).send("Mensaje omitido");
     }
 
