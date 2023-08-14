@@ -16,6 +16,7 @@ app.post("/webhook", async (req, res) => {
     // console.log(JSON.stringify(req.body, null, 2));
 
     const body = req.body;
+    console.log(body)
 
     if (
       body.entry &&
@@ -41,6 +42,7 @@ app.post("/webhook", async (req, res) => {
         console.log(`El guardian ${nameGuardian} va a recibir el paquete: ${phone}`);
 
         //Separacion del country code con el numero de telefono para buscar en db
+
         // const modifiedPhoneNumber = phone(phone)
         // const country_code = modifiedPhoneNumber.countryCode;
         // const user_phone = modifiedPhoneNumber.phoneNumber.slice(country_code.length)
@@ -49,12 +51,13 @@ app.post("/webhook", async (req, res) => {
         const originalMessage = body.entry[0].changes[0].value.messages[0].context.id;
         const regex = /wamid\.HBg(\w+)/;
         const match = originalMessage.match(regex);
-        // console.log(match)
 
         if (match) {
-          const encodedId = match[1];
-          const decodedId = Buffer.from(encodedId, 'base64').toString('ascii');
-          console.log("ID de la compra:", decodedId);
+          // const encodedId = match[1];
+          // const decodedId = Buffer.from(encodedId, 'base64').toString('ascii');
+          // console.log("ID de la compra:", decodedId);
+          const purchaseId = match[1];
+          console.log("ID de la compra:", purchaseId);
         } else {
           console.log("No se pudo encontrar el ID de la compra en el mensaje");
         }
