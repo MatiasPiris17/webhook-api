@@ -12,9 +12,6 @@ app.listen(port, () => console.log("webhook is listening"));
 
 app.post("/webhook", async (req, res) => {
   try {
-
-    // console.log(JSON.stringify(req.body, null, 2));
-
     const body = req.body;
 
     if (
@@ -29,56 +26,37 @@ app.post("/webhook", async (req, res) => {
       Array.isArray(body.entry[0].changes[0].value.contacts) &&
       body.entry[0].changes[0].value.contacts.length > 0
     ) {
-      const nameGuardian =
-        body.entry[0]?.changes[0]?.value?.contacts[0]?.profile?.name;
-      const phoneGuardian = body.entry[0]?.changes[0]?.value?.messages[0]?.from;
-      const messageGuardian =
-        body.entry[0]?.changes[0]?.value?.messages[0]?.button?.text;
-
-      const phone = await validationPhone(phoneGuardian);
+      const nameGuardian = body.entry[0]?.changes[0]?.value?.contacts[0]?.profile?.name;
+      const messageGuardian = body.entry[0]?.changes[0]?.value?.messages[0]?.button?.text;
 
       if (messageGuardian === "Si") {
-        console.log(`El guardian ${nameGuardian} va a recibir el paquete: ${phone}`);
-
-        //Separacion del country code con el numero de telefono para buscar en db
-
-        // const modifiedPhoneNumber = phone(phone)
-        // const country_code = modifiedPhoneNumber.countryCode;
-        // const user_phone = modifiedPhoneNumber.phoneNumber.slice(country_code.length)
-
         const idMessage = body.entry[0].changes[0].value.messages[0].context.id;
 
-        console.log("Respuesta SI ID: ", idMessage)
+        console.log(`El guardian ${nameGuardian} va a recibir el paquete ID: ${idMessage}`);
+        return res.status(200).send("Mensaje procesado");
 
+        // Buscar en la base de datos donde ID_message se idMessage
 
-        //Buscar en la tabla de "guardianes" que guardian coincide con (phoneWithoutCountryCode)
-        //Tambien tiene que coincir con el id_packege que extraigo de originalMessage
+        // Validacion para buscar el ID_message
+        // La tabla ID_message va a contener: id_user, id_guardian, id_packege
 
-        //Busco el id_packege y busco en la tabla "compras"
- 
-        //Buscar en la tabla de "compras" si ya hay un guardian asignado para recibir la compra
+        // Extraigo el id_packege 
+        // Busco en la base de datos "purchases" si tiene un guardian asignado
 
         //Si hay un guardian asignado, se realiza una peticion post enviando el template de la historia "Mensaje Whatsapp Otros Guardianes 3"
 
         //Si no hay un guardian asignado, se realiza una peticion post enviando el template de la historia "Mensaje Whatsapp Recepción 1"
 
         //Por ultimo, se envia un mensaje al usuario avisando que guardian va a recibir su compra, utilizando el template de la historia "Mensaje Whatsapp Usuario 2"
-
-
-        return res.status(200).send("Mensaje procesado");
       }
       if(messageGuardian === "No"){
-        // console.log(`El guardian ${nameGuardian} NO va a recibir el paquete:`);
-        // console.log("Respuesta NO ID: ", idMessage)
+        const idMessage = body.entry[0].changes[0].value.messages[0].context.id;
+        console.log(`El guardian ${nameGuardian} NO va a recibir el paquete ID: ${idMessage}`);
         return res.status(200).send("Mensaje procesado")
       }
     } else {
-      // console.log(`Mensaje omitido`);
-
-      const id = body.entry[0].changes[0].value.statuses[0].id
-      console.log("ID" ,id)
-
-      return res.status(200).send("Mensaje omitido");
+      //Se devuelve un status(200) ya que la API necesita esta respuesta sino lupea los mensajes
+      return res.status(200)
     }
 
     res.status(200).send("Mensaje procesado");
@@ -88,25 +66,7 @@ app.post("/webhook", async (req, res) => {
   }
 });
 
-// let phone_number_id =
-//   req.body.entry[0].changes[0].value.metadata.phone_number_id;
 
-// const data = {
-//   messaging_product: "whatsapp",
-//   to: phone,
-//   text: { body: "Ack: " + mensaje },
-// };
-
-// const config = { "Content-Type": "application/json" };
-
-// await axios.post(
-//   "https://graph.facebook.com/v17.0/" +
-//     phone_number_id +
-//     "/messages?access_token=" +
-//     token,
-//   data,
-//   config
-// );
 
 app.get("/webhook", async (req, res) => {
   try {
