@@ -49,14 +49,14 @@ app.post("/webhook", async (req, res) => {
         const originalMessage = body.entry[0].changes[0].value.messages[0].context.id;
         const regex = /wamid\.HBg(\w+)/;
         const match = originalMessage.match(regex);
-        console.log(match)
+        // console.log(match)
 
-        // if (match) {
-        //   const purchaseId = match[1];
-        //   console.log("ID de la compra:", purchaseId);
-        // } else {
-        //   console.log("No se pudo encontrar el ID de la compra en el mensaje");
-        // }
+        if (match) {
+          const purchaseId = match[1];
+          console.log("ID de la compra:", purchaseId);
+        } else {
+          console.log("No se pudo encontrar el ID de la compra en el mensaje");
+        }
 
         //Buscar en la tabla de "guardianes" que guardian coincide con (phoneWithoutCountryCode)
         //Tambien tiene que coincir con el id_packege que extraigo de originalMessage
