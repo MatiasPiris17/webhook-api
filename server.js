@@ -52,8 +52,9 @@ app.post("/webhook", async (req, res) => {
         // console.log(match)
 
         if (match) {
-          const purchaseId = match[1];
-          console.log("ID de la compra:", purchaseId);
+          const encodedId = match[1];
+          const decodedId = Buffer.from(encodedId, 'base64').toString('utf-8');
+          console.log("ID de la compra:", decodedId);
         } else {
           console.log("No se pudo encontrar el ID de la compra en el mensaje");
         }
