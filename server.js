@@ -40,9 +40,15 @@ app.post("/webhook", async (req, res) => {
       if (messageGuardian === "Si") {
         console.log(`El guardian ${nameGuardian} va a recibir el paquete: ${phone}`);
         const phoneWithoutCountryCode = phone.slice(3) //Solamente para Argentina
-        //Buscar en la tabla de "guardianes" que guardian coincide con (phoneWithoutCountryCode)
 
-        //El guardian que coincide le extraigo el id_guardian
+        const originalMessage = response.entry[0].changes[0].value.messages[0].context.id;
+        const regex = /\(número: (\d+)\)/;
+        const match = originalMessage.match(regex);
+
+        console.log(match)
+
+        //Buscar en la tabla de "guardianes" que guardian coincide con (phoneWithoutCountryCode)
+        //Tambien tiene que coincir con el id_packege que extraigo de originalMessage
 
         //Busco el id_packege y busco en la tabla "compras"
  
