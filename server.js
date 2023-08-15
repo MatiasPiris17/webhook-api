@@ -33,7 +33,7 @@ app.post("/webhook", async (req, res) => {
         const idMessage = body.entry[0].changes[0].value.messages[0].context.id;
 
         console.log(`El guardian ${nameGuardian} va a recibir el paquete ID: ${idMessage}`);
-        return res.status(200).send("Mensaje procesado");
+        return res.status(200)
 
         // Buscar en la base de datos donde ID_message se idMessage
 
