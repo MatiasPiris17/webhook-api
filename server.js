@@ -1,10 +1,7 @@
-// const token = process.env.WHATSAPP_TOKEN;
 const port = process.env.PORT || 3002;
 const express = require("express");
 const body_parser = require("body-parser");
-// const axios = require("axios");
-const { validationPhone } = require("./controllador");
-// const { Guardian } = require("../timbring-backend/src/db");
+const { Guardian, Message, Purchases } = require("../db");
 
 app = express().use(body_parser.json());
 
@@ -26,37 +23,67 @@ app.post("/webhook", async (req, res) => {
       Array.isArray(body.entry[0].changes[0].value.contacts) &&
       body.entry[0].changes[0].value.contacts.length > 0
     ) {
-      const nameGuardian = body.entry[0]?.changes[0]?.value?.contacts[0]?.profile?.name;
-      const messageGuardian = body.entry[0]?.changes[0]?.value?.messages[0]?.button?.text;
+      const nameGuardian =
+        body.entry[0]?.changes[0]?.value?.contacts[0]?.profile?.name;
+      const messageGuardian =
+        body.entry[0]?.changes[0]?.value?.messages[0]?.button?.text;
 
       if (messageGuardian === "Si") {
         const idMessage = body.entry[0].changes[0].value.messages[0].context.id;
 
-        console.log(`El guardian ${nameGuardian} va a recibir el paquete ID: ${idMessage}`);
-        return res.status(200)
+        const message = await Message.findOne({
+          where: {
+            name: idMessage,
+          },
+          // include: [
+          //   {
+          //     model: Guardian,
+          //     attributes: ["id_guardian"],
+          //   },
+          //   {
+          //     model: Purchases,
+          //     attributes: ["id_package"],
+          //   },
+          // ],
+        });
 
-        // Buscar en la base de datos donde ID_message se idMessage
+        const id_guardian = message.Guardian.id_guardian;
+        const id_package = message.Purchases.id_package;
 
-        // Validacion para buscar el ID_message
-        // La tabla ID_message va a contener: id_user, id_guardian, id_packege
+        const purchaseIdGuardian = message.Purchases.id_guardian;
 
-        // Extraigo el id_packege 
-        // Busco en la base de datos "purchases" si tiene un guardian asignado
+        if (purchaseIdGuardian === null) {
+          const purchaseToUpdate = await Purchases.findOne({
+            where: {
+              id_package: id_package,
+            },
+          });
+          await purchaseToUpdate.update({
+            id_guardian: id_guardian,
+          });
+        }
 
-        //Si hay un guardian asignado, se realiza una peticion post enviando el template de la historia "Mensaje Whatsapp Otros Guardianes 3"
-
-        //Si no hay un guardian asignado, se realiza una peticion post enviando el template de la historia "Mensaje Whatsapp Recepción 1"
+        //Manejar la variable cuando purchaseIdGuardian != null
+        if (purchaseIdGuardian != null) {
+          // Busco en la base de datos "purchases" si tiene un guardian asignado
+          //Si hay un guardian asignado, se realiza una peticion post enviando el template de la historia "Mensaje Whatsapp Otros Guardianes 3"
+          //Si no hay un guardian asignado, se realiza una peticion post enviando el template de la historia "Mensaje Whatsapp Recepción 1"
+        }
 
         //Por ultimo, se envia un mensaje al usuario avisando que guardian va a recibir su compra, utilizando el template de la historia "Mensaje Whatsapp Usuario 2"
+
+        return res.status(200);
       }
-      if(messageGuardian === "No"){
-        const idMessage = body.entry[0].changes[0].value.messages[0].context.id;
-        console.log(`El guardian ${nameGuardian} NO va a recibir el paquete ID: ${idMessage}`);
-        return res.status(200).send("Mensaje procesado")
+
+      if (messageGuardian === "No") {
+        return res
+          .status(200)
+          .send(`El guardian ${nameGuardian} NO recibira la compra`);
       }
     } else {
-      //Se devuelve un status(200) ya que la API necesita esta respuesta sino lupea los mensajes
-      return res.status(200)
+      return res
+        .status(200)
+        .send("Mensaje distinto de la relacion con: confirmGuardian");
     }
 
     res.status(200).send("Mensaje procesado");
@@ -66,11 +93,10 @@ app.post("/webhook", async (req, res) => {
   }
 });
 
-
-
 app.get("/webhook", async (req, res) => {
   try {
     const verify_token = process.env.VERIFY_TOKEN;
+    console.log(challenge);
 
     let mode = req.query["hub.mode"];
     let token = req.query["hub.verify_token"];
