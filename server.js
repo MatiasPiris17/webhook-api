@@ -131,7 +131,7 @@ app.post("/webhook", async (req, res) => {
         //   console.log(purchaseIdGuardian);
         // }
 
-        return res.status(200).send("Guardianes y usuario informados");
+        return res.status(200)
       }
 
       if (messageGuardian === "No") {
@@ -140,9 +140,7 @@ app.post("/webhook", async (req, res) => {
           response_user: messageGuardian
         }
         console.log(message)
-        return res
-          .status(200)
-          .send(`El guardian ${nameGuardian} NO recibira la compra`);
+        return res.status(200)
       }
     } else {
       return res.status(200)
