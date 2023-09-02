@@ -162,12 +162,11 @@ app.post("/webhook", async (req, res) => {
 
 app.get("/webhook", async (req, res) => {
   try {
-    const verify_token = process.env.VERIFY_TOKEN;
+    const verify_token = "Timbring";
     
     let mode = req.query["hub.mode"];
     let token = req.query["hub.verify_token"];
     let challenge = req.query["hub.challenge"];
-    console.log(challenge);
 
     if (mode && token) {
       if (mode === "subscribe" && token === verify_token) {
