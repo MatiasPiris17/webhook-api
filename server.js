@@ -174,7 +174,7 @@ app.get("/webhook", async (req, res) => {
         console.log("WEBHOOK_VERIFIED");
         res.status(200).send(challenge);
       } else {
-        return res.status(404).json(error);
+        return res.status(404).json({error:error.message});
       }
     }
     console.log("Conectado pero no verificado");
