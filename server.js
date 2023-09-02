@@ -1,10 +1,8 @@
-const port = process.env.PORT || 3002;
-const axios = require("axios");
 const express = require("express");
 const body_parser = require("body-parser");
 
 app = express().use(body_parser.json());
-app.listen(port, () => console.log(`webhook is listening: ${port}`));
+app.listen(3002, () => console.log(`webhook is listening: 3002`));
 
 
 
@@ -173,9 +171,11 @@ app.get("/webhook", async (req, res) => {
         console.log("WEBHOOK_VERIFIED");
         res.status(200).send(challenge);
       } 
+    } else {
+      console.log("Conectado pero no verificado");
+      res.status(200)
     }
-    console.log("Conectado pero no verificado");
-    res.status(200).send("Conectado pero no verificado");
+
   } catch (error) {
     console.log(error);
     res.status(404).json({error: error.message});
