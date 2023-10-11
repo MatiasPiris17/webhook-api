@@ -9,11 +9,11 @@ module.exports = (req, res) => {
         if (mode && token) {
           if (mode === "subscribe" && token === verify_token) {
             console.log("WEBHOOK_VERIFIED");
-            res.status(200).json({message:challenge});
+            res.status(200).send(challenge);
           } 
         } else {
-          console.log("No se logro establecer conexión");
-          res.status(404).json({error: "No se logro establecer el webhook"});
+          console.log("Conectado pero no verificado");
+          res.status(200)
         }
     
       } catch (error) {
